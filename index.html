@@ -28,6 +28,14 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             overscroll-behavior: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        input {
+            -webkit-user-select: text;
+            user-select: text;
         }
         
         /* Custom scrollbar */
@@ -178,7 +186,6 @@
                 <div>
                     <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Patchnotes</div>
                     <ul class="text-sm text-gray-600 mt-1 list-disc list-inside space-y-1">
-                        <li>Deutsche Sprachausgabe hinzugefügt</li>
                         <li>Navigation UI verbessert</li>
 
                         <li>Performance Optimierungen</li>
@@ -477,9 +484,8 @@
             map.setZoom(18);
             if (userLocation) map.panTo(userLocation);
             
-            // Speak first instruction
+            // First instruction
             if (currentRoute.instructions.length > 0) {
-                speak(currentRoute.instructions[0].text);
                 updateNavUI(currentRoute.instructions[0], 0);
             }
         }
@@ -549,12 +555,6 @@
                 const distanceToManeuver = userLatLng.distanceTo(maneuverLatLng);
                 
                 updateNavUI(activeInstr, distanceToManeuver);
-
-                // Voice announcement logic (simplified)
-                if (distanceToManeuver < 100 && !activeInstr.announced) {
-                    speak("In 100 Metern " + activeInstr.text);
-                    activeInstr.announced = true;
-                }
             }
         }
 
@@ -569,14 +569,6 @@
             if (instr.type === 'DestinationReached') icon = '★';
             
             document.getElementById('nav-icon').innerText = icon;
-        }
-
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'de-DE';
-                window.speechSynthesis.speak(utterance);
-            }
         }
 
         // --- Helpers ---
